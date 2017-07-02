@@ -22,7 +22,8 @@ import java.awt.event.ActionListener;
 public class GenericQuizApp extends JFrame implements ActionListener {
 	private String path = "Saudiska kungar.txt";
 	private File quizFile;
-	
+
+	private int numberOfQuestions = 5;
 	private ArrayList<QuizItem> quizItemList;
 	
 	private JPanel questionPanel;
@@ -50,7 +51,11 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 		}
 		
 		createQuestion();
-
+		
+		initFrameAttributes();
+	}
+	
+	private void initFrameAttributes() {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
         // Determine the new location of the window
@@ -104,9 +109,13 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 		resultPanel.add(resultButton);
 	}
 	
+	/**
+	 * Extracts data from the file and putting them in "quizItemList"
+	 */
 	private void extractData() throws IOException {
 		Scanner scanner = new Scanner(quizFile);
 
+		// Makes sure the first word is the tag "QUESTION" (basically format-check)
 		if (!scanner.next().equals("QUESTION:")) {
 			System.exit(0);
 		}
@@ -126,9 +135,7 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 				}
 			}
 			
-			QuizItem item = new QuizItem(question.toString(), answer.toString());
-			
-			quizItemList.add(item);
+			quizItemList.add(new QuizItem(question.toString(), answer.toString()));
 		}
 		
 		scanner.close();
@@ -187,7 +194,6 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 
 	/**
 	 * Source: https://stackoverflow.com/questions/201287/how-do-i-get-which-jradiobutton-is-selected-from-a-buttongroup
-	 * 
 	 */
 	private String getSelectedButtonText(ButtonGroup buttonGroup) {
         for (Enumeration<AbstractButton> buttons = buttonGroup.getElements(); buttons.hasMoreElements();) {
