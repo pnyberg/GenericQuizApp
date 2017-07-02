@@ -24,14 +24,20 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 	private File quizFile;
 
 	private int numberOfQuestions = 5;
+	private int numberOfRightAnswers;
 	private ArrayList<QuizItem> quizItemList;
+	private int questionListIndex;
+	private ArrayList<Integer> questionList;
 	
 	private JPanel questionPanel;
 	private JLabel questionLabel;
 	private JRadioButton[] radiobutton;
 	private ButtonGroup radiobuttonGroup;
 	private JButton enterButton;
-	private int questionIndex;
+
+	private JPanel answerPanel;
+	private JLabel answerLabel;
+	private JButton answerButton;
 
 	private JPanel resultPanel;
 	private JLabel resultLabel;
@@ -40,6 +46,8 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 	public GenericQuizApp() {
 		quizFile = new File(path);
 		quizItemList = new ArrayList<QuizItem>();
+		
+		numberOfRightAnswers = 0;
 
 		initPanels();
 		
@@ -50,7 +58,7 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 			System.exit(0);
 		}
 		
-		createQuestion();
+		createQuestions();
 		
 		initFrameAttributes();
 	}
@@ -99,10 +107,20 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 		add(questionPanel);
 		
 		// Answer-panel
+		answerPanel = new JPanel();
+		answerPanel.setLayout(new GridLayout(2, 1));
+		answerLabel = new JLabel("default", JLabel.CENTER);
+		answerButton = new JButton("Return to questions");
+		answerButton.addActionListener(this);
+		
+		answerPanel.add(answerLabel);
+		answerPanel.add(answerButton);
+
+		// Result-panel
 		resultPanel = new JPanel();
 		resultPanel.setLayout(new GridLayout(2, 1));
 		resultLabel = new JLabel("default", JLabel.CENTER);
-		resultButton = new JButton("Return to questions");
+		resultButton = new JButton("What to do now?");
 		resultButton.addActionListener(this);
 		
 		resultPanel.add(resultLabel);
@@ -141,8 +159,26 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 		scanner.close();
 	}
 	
-	private void createQuestion() {
-		questionIndex = ThreadLocalRandom.current().nextInt(0, quizItemList.size());
+	private void createQuestions() {
+		questionList = new ArrayList<Integer>(); 
+		boolean[] questionUsed = new boolean[quizItemList.size()];
+
+		for (int i = 0 ; i < numberOfQuestions ; i++) {
+			while(true) {
+				int questionIndex = ThreadLocalRandom.current().nextInt(0, quizItemList.size());
+				if (!questionUsed[questionIndex]) {
+					questionList.add(questionIndex);
+					questionUsed[questionIndex] = true;
+					break;
+				}
+			}
+		}
+		
+		setQuestion();
+	}
+	
+	private void setQuestion() {
+		int questionIndex = questionList.get(questionListIndex);
 		QuizItem item = quizItemList.get(questionIndex);
 		
 		boolean[] answerSet = new boolean[quizItemList.size()];
@@ -167,12 +203,32 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 			}
 		}
 	}
+	
+	private void setNextQuestion() {
+		questionListIndex++;
+		radiobutton[0].setSelected(true);
+
+		setQuestion();
+		
+		if (questionListIndex == (numberOfQuestions - 1)) {
+			answerButton.setText("Done! Show results!");
+		}
+	}
 
 	private void checkAnswer() {
+		int questionIndex = questionList.get(questionListIndex);
 		QuizItem item = quizItemList.get(questionIndex);
-		resultLabel.setText("<html>" + "Question: " + item.getQuestion() + "<br>" +
+		answerLabel.setText("<html>" + "Question: " + item.getQuestion() + "<br>" +
 							"Your answer: " + getSelectedButtonText(radiobuttonGroup) + "<br>" + 
 							"Right answer: " + item.getAnswer() + "</html>");
+		
+		if (getSelectedButtonText(radiobuttonGroup).equals(item.getAnswer())) {
+			numberOfRightAnswers++;
+		}
+	}
+	
+	private void setResultLabel() {
+		resultLabel.setText("Result: " + numberOfRightAnswers + "/" + numberOfQuestions);
 	}
 	
 	public void actionPerformed(ActionEvent e) {
@@ -180,12 +236,19 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 			checkAnswer();
 			
 			remove(questionPanel);
-			add(resultPanel);
-		} else if (e.getSource() == resultButton) {
-			createQuestion();
-			
-			remove(resultPanel);
-			add(questionPanel);
+			add(answerPanel);
+		} else if (e.getSource() == answerButton) {
+			if (questionListIndex == (numberOfQuestions - 1)) {
+				setResultLabel();
+				
+				remove(answerPanel);
+				add(resultPanel);
+			} else {
+				setNextQuestion();
+				
+				remove(answerPanel);
+				add(questionPanel);
+			}
 		}
 		
 		repaint();
