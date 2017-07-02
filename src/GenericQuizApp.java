@@ -177,6 +177,9 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 		setQuestion();
 	}
 	
+	/**
+	 * Set swing-components to contain the relevant questions information
+	 */
 	private void setQuestion() {
 		int questionIndex = questionList.get(questionListIndex);
 		QuizItem item = quizItemList.get(questionIndex);
@@ -215,6 +218,9 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 		}
 	}
 
+	/**
+	 * Print information about the answer and calculate number of right answers
+	 */
 	private void checkAnswer() {
 		int questionIndex = questionList.get(questionListIndex);
 		QuizItem item = quizItemList.get(questionIndex);
