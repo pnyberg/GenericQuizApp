@@ -1,0 +1,20 @@
+QUESTION: Who was the #1 king of Saudi Arabia?
+ANSWER: Ibn Saud (Abdul-Aziz)
+
+QUESTION: Who was the #2 king of Saudi Arabia?
+ANSWER: Saud
+
+QUESTION: Who was the #3 king of Saudi Arabia?
+ANSWER: Faisal
+
+QUESTION: Who was the #4 king of Saudi Arabia?
+ANSWER: Khalid
+
+QUESTION: Who was the #5 king of Saudi Arabia?
+ANSWER: Fahd
+
+QUESTION: Who was the #6 king of Saudi Arabia?
+ANSWER: Abdullah
+
+QUESTION: Who was the #7 king of Saudi Arabia?
+ANSWER: Salman
