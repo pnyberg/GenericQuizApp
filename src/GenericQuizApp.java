@@ -23,33 +23,25 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 	private String path = "Saudiska kungar.txt";
 	private File quizFile;
 
-	private int numberOfQuestions = 5;
+	private int numberOfQuestions;
 	private int numberOfRightAnswers;
 	private ArrayList<QuizItem> quizItemList;
 	private int questionListIndex;
 	private ArrayList<Integer> questionList;
 	
-	private JPanel questionPanel;
-	private JLabel questionLabel;
-	private JRadioButton[] radiobutton;
-	private ButtonGroup radiobuttonGroup;
-	private JButton enterButton;
-
-	private JPanel answerPanel;
-	private JLabel answerLabel;
-	private JButton answerButton;
-
-	private JPanel resultPanel;
-	private JLabel resultLabel;
-	private JButton resultButton;
+	private QuizAppStartView startView;
+	private QuizAppQuestionView questionView;
+	private QuizAppAnswerView answerView;
+	private QuizAppResultView resultView;
 
 	public GenericQuizApp() {
 		quizFile = new File(path);
 		quizItemList = new ArrayList<QuizItem>();
 		
+		numberOfQuestions = 5;
 		numberOfRightAnswers = 0;
 
-		initPanels();
+		initViews();
 		
 		try {
 			extractData();
@@ -80,51 +72,23 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 		setVisible(true);
 	}
 	
-	private void initPanels() {
-		// Question-panel
-		questionPanel = new JPanel();
-		questionLabel = new JLabel("default", JLabel.CENTER);
-		radiobutton = new JRadioButton[4];
-		radiobuttonGroup = new ButtonGroup();
-		enterButton = new JButton("Enter answer");
-		enterButton.addActionListener(this);
-		questionPanel.setLayout(new GridLayout(6, 1));
+	private void initViews() {
+		// Start-view
+		startView = new QuizAppStartView();
+		startView.setActionListener(this);
+		add(startView);
 		
-		for (int i = 0 ; i < radiobutton.length ; i++) {
-			radiobutton[i] = new JRadioButton("" + i + "");
-			radiobutton[i].setHorizontalAlignment(JRadioButton.CENTER);
-			
-			radiobuttonGroup.add(radiobutton[i]);
-		}
+		// Question-view
+		questionView = new QuizAppQuestionView();
+		questionView.setActionListener(this);
 		
-		radiobutton[0].setSelected(true);
+		// Answer-view
+		answerView = new QuizAppAnswerView();
+		answerView.setActionListener(this);
 
-		questionPanel.add(questionLabel);
-		for (int i = 0 ; i < radiobutton.length ; i++) {
-			questionPanel.add(radiobutton[i], JPanel.CENTER_ALIGNMENT);
-		}
-		questionPanel.add(enterButton);
-		add(questionPanel);
-		
-		// Answer-panel
-		answerPanel = new JPanel();
-		answerPanel.setLayout(new GridLayout(2, 1));
-		answerLabel = new JLabel("default", JLabel.CENTER);
-		answerButton = new JButton("Return to questions");
-		answerButton.addActionListener(this);
-		
-		answerPanel.add(answerLabel);
-		answerPanel.add(answerButton);
-
-		// Result-panel
-		resultPanel = new JPanel();
-		resultPanel.setLayout(new GridLayout(2, 1));
-		resultLabel = new JLabel("default", JLabel.CENTER);
-		resultButton = new JButton("What to do now?");
-		resultButton.addActionListener(this);
-		
-		resultPanel.add(resultLabel);
-		resultPanel.add(resultButton);
+		// Result-view
+		resultView = new QuizAppResultView();
+		resultView.setActionListener(this);
 	}
 	
 	/**
@@ -185,21 +149,21 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 		QuizItem item = quizItemList.get(questionIndex);
 		
 		boolean[] answerSet = new boolean[quizItemList.size()];
-		questionLabel.setText(item.getQuestion());
+		questionView.setQuestionLabelText(item.getQuestion());
 		
 		int answerIndex = ThreadLocalRandom.current().nextInt(0, 4);
 		answerSet[questionIndex] = true;
 		
-		for (int index = 0 ; index < radiobutton.length ; index++) {
+		for (int index = 0 ; index < questionView.getNumberOfAnswerOptions() ; index++) {
 			if (index == answerIndex) {
-				radiobutton[answerIndex].setText(item.getAnswer());
+				questionView.setAnswerOption(answerIndex, item.getAnswer());
 				continue;
 			}
 			while(true) {
 				int additionalAnswerIndex = ThreadLocalRandom.current().nextInt(0, quizItemList.size());	
 				if (!answerSet[additionalAnswerIndex]) {
 					QuizItem answerItem = quizItemList.get(additionalAnswerIndex);
-					radiobutton[index].setText(answerItem.getAnswer());
+					questionView.setAnswerOption(index, answerItem.getAnswer());
 					answerSet[additionalAnswerIndex] = true;
 					break;
 				}
@@ -209,12 +173,12 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 	
 	private void setNextQuestion() {
 		questionListIndex++;
-		radiobutton[0].setSelected(true);
+		questionView.setSelectedAnswerOption(0);
 
 		setQuestion();
 		
-		if (questionListIndex == (numberOfQuestions - 1)) {
-			answerButton.setText("Done! Show results!");
+		if (questionListIndex == (numberOfQuestions - 1)) { // last question
+			answerView.setAnswerButtonText("Done! Show results!");
 		}
 	}
 
@@ -224,57 +188,42 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 	private void checkAnswer() {
 		int questionIndex = questionList.get(questionListIndex);
 		QuizItem item = quizItemList.get(questionIndex);
-		answerLabel.setText("<html>" + "Question: " + item.getQuestion() + "<br>" +
-							"Your answer: " + getSelectedButtonText(radiobuttonGroup) + "<br>" + 
-							"Right answer: " + item.getAnswer() + "</html>");
+		answerView.setAnswerLabelText("<html>" + "Question: " + item.getQuestion() + "<br>" +
+				"Your answer: " + questionView.getSelectedButtonText() + "<br>" + 
+				"Right answer: " + item.getAnswer() + "</html>");
 		
-		if (getSelectedButtonText(radiobuttonGroup).equals(item.getAnswer())) {
+		if (questionView.getSelectedButtonText().equals(item.getAnswer())) {
 			numberOfRightAnswers++;
 		}
 	}
 	
-	private void setResultLabel() {
-		resultLabel.setText("Result: " + numberOfRightAnswers + "/" + numberOfQuestions);
+	private void updateResultLabel() {
+		resultView.setResult(numberOfRightAnswers, numberOfQuestions);
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == enterButton) {
+		if (e.getSource() == questionView.getEnterButton()) {
 			checkAnswer();
 			
-			remove(questionPanel);
-			add(answerPanel);
-		} else if (e.getSource() == answerButton) {
-			if (questionListIndex == (numberOfQuestions - 1)) {
-				setResultLabel();
+			remove(questionView);
+			add(answerView);
+		} else if (e.getSource() == answerView.getAnswerButton()) {
+			if (questionListIndex == (numberOfQuestions - 1)) { // last question
+				updateResultLabel();
 				
-				remove(answerPanel);
-				add(resultPanel);
+				remove(answerView);
+				add(resultView);
 			} else {
 				setNextQuestion();
 				
-				remove(answerPanel);
-				add(questionPanel);
+				remove(answerView);
+				add(questionView);
 			}
 		}
 		
 		repaint();
 		revalidate();
 	}
-
-	/**
-	 * Source: https://stackoverflow.com/questions/201287/how-do-i-get-which-jradiobutton-is-selected-from-a-buttongroup
-	 */
-	private String getSelectedButtonText(ButtonGroup buttonGroup) {
-        for (Enumeration<AbstractButton> buttons = buttonGroup.getElements(); buttons.hasMoreElements();) {
-            AbstractButton button = buttons.nextElement();
-
-            if (button.isSelected()) {
-                return button.getText();
-            }
-        }
-
-        return null;
-    }
 
 	public static void main(String[] args) {
 		new GenericQuizApp();
