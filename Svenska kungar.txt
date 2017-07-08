@@ -1,0 +1,20 @@
+QUESTION: Who was the #1 king of Sweden?
+ANSWER: Gustav Vasa
+
+QUESTION: Who was the #2 king of Sweden?
+ANSWER: Erik XIV
+
+QUESTION: Who was the #3 king of Sweden?
+ANSWER: Johan III
+
+QUESTION: Who was the #4 king of Sweden?
+ANSWER: Sigismund III
+
+QUESTION: Who was the #5 king of Sweden?
+ANSWER: Karl IX
+
+QUESTION: Who was the #6 king of Sweden?
+ANSWER: Gustav II Adolf
+
+QUESTION: Who was the #7 king of Sweden?
+ANSWER: Kristina
