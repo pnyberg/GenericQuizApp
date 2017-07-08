@@ -8,6 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -44,15 +45,6 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 
 		initViews();
 		
-		try {
-			extractData();
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.exit(0);
-		}
-		
-		createQuestions();
-		
 		initFrameAttributes();
 	}
 	
@@ -77,8 +69,6 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 		// Start-view
 		startView = new QuizAppStartView(path);
 		startView.setActionListener(this);
-		add(startView);
-		
 		// Question-view
 		questionView = new QuizAppQuestionView();
 		questionView.setActionListener(this);
@@ -90,6 +80,9 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 		// Result-view
 		resultView = new QuizAppResultView();
 		resultView.setActionListener(this);
+
+		// Set the first view 
+		add(startView);
 	}
 	
 	/**
@@ -204,8 +197,29 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 	
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == startView.getStartButton()) {
+			try {
+				extractData();
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+				System.exit(0);
+			}
+			
+			createQuestions();
+			
 			remove(startView);
 			add(questionView);
+		} else if (e.getSource() == startView.getFilePathButton()) {
+	        JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir"));
+			int returnVal = fileChooser.showOpenDialog(this);
+
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				String filePathText = fileChooser.getSelectedFile().getPath(); 
+				quizFile = new File(filePathText);
+				startView.setTextFieldText(quizFile.getName());
+	        } else {
+	        	// Do nothing, file not changed
+	        }
+			 
 		} else if (e.getSource() == questionView.getEnterButton()) {
 			checkAnswer();
 			
@@ -224,7 +238,7 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 				add(questionView);
 			}
 		}
-		
+				
 		repaint();
 		revalidate();
 	}
