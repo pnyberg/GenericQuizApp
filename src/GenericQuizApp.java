@@ -12,6 +12,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -74,7 +75,7 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 	
 	private void initViews() {
 		// Start-view
-		startView = new QuizAppStartView();
+		startView = new QuizAppStartView(path);
 		startView.setActionListener(this);
 		add(startView);
 		
@@ -202,7 +203,10 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == questionView.getEnterButton()) {
+		if (e.getSource() == startView.getStartButton()) {
+			remove(startView);
+			add(questionView);
+		} else if (e.getSource() == questionView.getEnterButton()) {
 			checkAnswer();
 			
 			remove(questionView);
