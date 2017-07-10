@@ -18,3 +18,51 @@ ANSWER: Gustav II Adolf
 
 QUESTION: Who was the #7 king of Sweden?
 ANSWER: Kristina
+
+QUESTION: Who was the #8 king of Sweden?
+ANSWER: Karl X Gustav
+
+QUESTION: Who was the #9 king of Sweden?
+ANSWER: Karl XI
+
+QUESTION: Who was the #10 king of Sweden?
+ANSWER: Karl XII
+
+QUESTION: Who was the #11 king of Sweden?
+ANSWER: Ulrika Eleonora
+
+QUESTION: Who was the #12 king of Sweden?
+ANSWER: Fredrik I
+
+QUESTION: Who was the #13 king of Sweden?
+ANSWER: Adolf Fredrik
+
+QUESTION: Who was the #14 king of Sweden?
+ANSWER: Gustav III
+
+QUESTION: Who was the #15 king of Sweden?
+ANSWER: Gustav IV Adolf
+
+QUESTION: Who was the #16 king of Sweden?
+ANSWER: Karl XIII
+
+QUESTION: Who was the #17 king of Sweden?
+ANSWER: Karl XIV Johan
+
+QUESTION: Who was the #18 king of Sweden?
+ANSWER: Oscar I
+
+QUESTION: Who was the #19 king of Sweden?
+ANSWER: Karl XV
+
+QUESTION: Who was the #20 king of Sweden?
+ANSWER: Oscar II
+
+QUESTION: Who was the #21 king of Sweden?
+ANSWER: Gustaf V
+
+QUESTION: Who was the #22 king of Sweden?
+ANSWER: Gustaf VI Adolf
+
+QUESTION: Who was the #23 king of Sweden?
+ANSWER: Carl XVI Gustaf
