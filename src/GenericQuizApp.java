@@ -30,6 +30,7 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 	private ArrayList<QuizItem> quizItemList;
 	private int questionListIndex;
 	private ArrayList<Integer> questionList;
+	private int[] questionAmountOptions = {1, 5, 10, 15, 20, 25};
 	
 	private QuizAppStartView startView;
 	private QuizAppQuestionView questionView;
@@ -61,13 +62,13 @@ public class GenericQuizApp extends JFrame implements ActionListener {
         this.setLocation(x, y);
         
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setSize(320, 230);
+		setSize(320, 270);
 		setVisible(true);
 	}
 	
 	private void initViews() {
 		// Start-view
-		startView = new QuizAppStartView(path);
+		startView = new QuizAppStartView(path, questionAmountOptions);
 		startView.setActionListener(this);
 		// Question-view
 		questionView = new QuizAppQuestionView();
@@ -199,6 +200,7 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 		if (e.getSource() == startView.getStartButton()) {
 			try {
 				extractData();
+				numberOfQuestions = Math.min(quizItemList.size(), startView.getChosenAmountOfQuestions()); 
 			} catch (IOException ioe) {
 				ioe.printStackTrace();
 				System.exit(0);
@@ -238,7 +240,7 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 				add(questionView);
 			}
 		}
-				
+
 		repaint();
 		revalidate();
 	}
