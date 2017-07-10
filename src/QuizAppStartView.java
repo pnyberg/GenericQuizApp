@@ -54,6 +54,7 @@ public class QuizAppStartView extends JPanel {
 		startButton.addActionListener(app);
 		filePathButton.addActionListener(app);
 		questionAmountBox.addActionListener(app);
+		filePathTextField.addActionListener(app);
 	}
 	
 	public void setTextFieldText(String pathText) {
@@ -66,6 +67,10 @@ public class QuizAppStartView extends JPanel {
 
 	protected JButton getFilePathButton() {
 		return filePathButton;
+	}
+	
+	protected JTextField getFilePathTextField() {
+		return filePathTextField;
 	}
 	
 	protected int getChosenAmountOfQuestions() {

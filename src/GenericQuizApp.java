@@ -14,6 +14,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -70,6 +72,9 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 		// Start-view
 		startView = new QuizAppStartView(path, questionAmountOptions);
 		startView.setActionListener(this);
+		startView.getFilePathTextField().getDocument().addDocumentListener(dl);
+		updateQuestionAmountBox();
+		
 		// Question-view
 		questionView = new QuizAppQuestionView();
 		questionView.setActionListener(this);
@@ -192,10 +197,31 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 		}
 	}
 	
+	private void updateQuestionAmountBox() {
+		System.out.println("Update question amount");
+		// TODO: fix so that only updates when necessary (not for every letter-change?)
+	}
+	
 	private void updateResultLabel() {
 		resultView.setResult(numberOfRightAnswers, numberOfQuestions);
 	}
 	
+	DocumentListener dl = new DocumentListener() {
+		public void changedUpdate(DocumentEvent e) {
+			// Nothing
+		}
+
+		public void removeUpdate(DocumentEvent e) {
+			updateQuestionAmountBox();
+			System.out.println("Effective");
+		}
+
+		public void insertUpdate(DocumentEvent e) {
+			updateQuestionAmountBox();
+			System.out.println("PEnis");
+		}
+	};
+
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == startView.getStartButton()) {
 			try {
@@ -239,6 +265,10 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 				remove(answerView);
 				add(questionView);
 			}
+		}
+		
+		if (e.getSource() == startView.getFilePathTextField()) {
+			System.out.println("trying");
 		}
 
 		repaint();
