@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<quiz>
+	<question>
+		<statement>Who was the #1 king of Saudi Arabia?</statement>
+		<answer>Ibn Saud (Abdul-Aziz)</answer>
+	</question>
+
+	<question>
+		<statement>Who was the #2 king of Saudi Arabia?</statement>
+		<answer>Saud</answer>
+	</question>
+
+	<question>
+		<statement>Who was the #3 king of Saudi Arabia?</statement>
+		<answer>Faisal</answer>
+	</question>
+
+	<question>
+		<statement>Who was the #4 king of Saudi Arabia?</statement>
+		<answer>Khalid</answer>
+	</question>
+
+	<question>
+		<statement>Who was the #5 king of Saudi Arabia?</statement>
+		<answer>Fahd</answer>
+	</question>
+
+	<question>
+		<statement>Who was the #6 king of Saudi Arabia?</statement>
+		<answer>Abdullah</answer>
+	</question>
+
+	<question>
+		<statement>Who was the #7 king of Saudi Arabia?</statement>
+		<answer>Salman</answer>
+	</question>
+</quiz>

@@ -16,6 +16,14 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.PlainDocument;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -24,7 +32,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class GenericQuizApp extends JFrame implements ActionListener {
-	private String path = "Saudiska kungar.txt";
+	private String path = "saudi_kings.xml";
 	private File quizFile;
 
 	private int numberOfQuestions;
@@ -95,32 +103,47 @@ public class GenericQuizApp extends JFrame implements ActionListener {
 	 * Extracts data from the file and putting them in "quizItemList"
 	 */
 	private void extractData() throws IOException {
-		Scanner scanner = new Scanner(quizFile);
-
-		// Makes sure the first word is the tag "QUESTION" (basically format-check)
-		if (!scanner.next().equals("QUESTION:")) {
-			System.exit(0);
-		}
 		
-		while (scanner.hasNext()) {
-			StringBuilder question = new StringBuilder();
-			StringBuilder answer = new StringBuilder();
-
-			for (String t = scanner.next() ; !t.equals("ANSWER:") ; t = scanner.next()) {
-				question.append(t + " ");
-			}
-			for (String t = scanner.next() ; !t.equals("QUESTION:") ; t = scanner.next()) {
-				answer.append(t + " ");
+		try {
+			
+			//Parse file given as XML
+			DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			Document doc = dBuilder.parse(quizFile);
+			
+			//Base child node is called quiz. We want all child nodes of the quiz, i.e the question nodes.
+			NodeList questions = doc.getChildNodes().item(0).getChildNodes();
+			
+			//For each set of questions and answers
+			for (int i = 0; i < questions.getLength(); i++) {
 				
-				if (!scanner.hasNext()) {
-					break;
+				//Nodes will contain both a question and an answer. Loop and save both as strings.
+				NodeList question_nodes = questions.item(i).getChildNodes();
+				String statement = "";
+				String answer = "";
+				
+				for (int j = 0; j < question_nodes.getLength(); j++) {
+					
+					Node node = question_nodes.item(j);
+					
+					//Assuming the type of the node is an element, and matches a Q or A, save it.
+					if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals("statement"))
+						statement = node.getTextContent();
+					
+					if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals("answer"))
+						answer = node.getTextContent();
+					
+					// When both the statement (question formulation) and the answer have been found
+					//add then to the list of quiz items.
+					if(! (answer.equals("") || statement.equals("")) ) {
+						quizItemList.add(new QuizItem(statement, answer));
+					}
 				}
 			}
-			
-			quizItemList.add(new QuizItem(question.toString(), answer.toString()));
 		}
-		
-		scanner.close();
+		catch (Exception e) {
+			System.err.println("Error when parsing XML document.");
+			e.printStackTrace();
+		}
 	}
 	
 	private void createQuestions() {
